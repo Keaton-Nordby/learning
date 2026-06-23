@@ -1,0 +1,250 @@
+# Employee Admin Portal - Project Roadmap
+
+## Project Goal
+
+Build a full-stack employee management system that allows authenticated users to create, view, update, and delete employee records.
+
+The primary goal is not the employee domain itself. The goal is to learn and demonstrate real-world software engineering concepts including API design, CRUD operations, authentication, databases, frontend/backend communication, and application architecture.
+
+---
+
+# Phase 1 - Core Backend API
+
+Goal: Build a working CRUD API using Express and in-memory data.
+
+Focus Areas:
+
+* Express fundamentals
+* Route handlers
+* Request/response lifecycle
+* Route parameters
+* Request bodies
+* HTTP status codes
+* Error handling
+
+Endpoints:
+
+* GET /employees
+* GET /employees/:id
+* POST /employees
+* PUT /employees/:id
+* DELETE /employees/:id
+
+Requirements:
+
+* Data stored in an array
+* Unique employee IDs
+* Basic validation
+* Proper success/error responses
+
+Deliverable:
+A fully functional CRUD API without a database.
+
+---
+
+# Phase 2 - Backend Refactor and Structure
+
+Goal: Introduce basic project organization.
+
+Focus Areas:
+
+* Separation of concerns
+* Maintainability
+* Code organization
+
+Suggested Structure:
+
+server/
+├── routes/
+├── controllers/
+├── services/
+├── middleware/
+├── models/
+├── config/
+└── server.js
+
+Requirements:
+
+* Move route logic out of server.js
+* Separate controllers from route definitions
+* Create reusable error handling
+
+Deliverable:
+A cleaner backend structure similar to professional projects.
+
+---
+
+# Phase 3 - Database Integration
+
+Goal: Persist employee data in a database.
+
+Focus Areas:
+
+* SQL fundamentals
+* Database modeling
+* Data persistence
+* CRUD with a database
+
+Database:
+
+* PostgreSQL (preferred)
+
+Employee Fields:
+
+* id
+* employee_id
+* first_name
+* last_name
+* email
+* position
+* department
+* salary
+* hire_date
+
+Requirements:
+
+* Replace in-memory array
+* Create employee table
+* Perform CRUD through SQL queries
+
+Deliverable:
+A backend connected to a real database.
+
+---
+
+# Phase 4 - Authentication and Security
+
+Goal: Restrict access to authenticated users.
+
+Focus Areas:
+
+* User accounts
+* Password hashing
+* Authentication
+* Authorization
+* Security fundamentals
+
+Features:
+
+* Register
+* Login
+* Logout
+* JWT authentication
+
+Requirements:
+
+* Users table
+* Hashed passwords
+* Protected employee routes
+* Authentication middleware
+
+Deliverable:
+A secure API requiring login before accessing employee data.
+
+---
+
+# Phase 5 - Frontend Foundation
+
+Goal: Build the user interface using React.
+
+Focus Areas:
+
+* React fundamentals
+* Component architecture
+* State management
+* API integration
+
+Pages:
+
+* Login
+* Employee List
+* Create Employee
+* Edit Employee
+
+Requirements:
+
+* Connect frontend to backend
+* Display employee data
+* Create forms
+* Handle loading and error states
+
+Deliverable:
+A working frontend connected to the API.
+
+---
+
+# Phase 6 - Full Application Integration
+
+Goal: Combine frontend, backend, database, and authentication.
+
+Focus Areas:
+
+* Full-stack workflows
+* Protected routes
+* User experience
+
+Requirements:
+
+* Login flow
+* Authenticated API requests
+* Employee management from UI
+* Form validation
+* Error handling
+
+Deliverable:
+A complete full-stack employee management application.
+
+---
+
+# Phase 7 - Polish and Professional Features
+
+Goal: Improve usability and demonstrate production-ready thinking.
+
+Potential Features:
+
+* Search employees
+* Filter employees
+* Pagination
+* Sorting
+* Dashboard statistics
+* Better validation
+* Logging
+* Environment variables
+
+Deliverable:
+A polished portfolio project.
+
+---
+
+# Future Expansion Ideas
+
+Possible Version 2 Features:
+
+* Employee profile photos
+* Department management
+* Manager relationships
+* Role-based permissions
+* Audit logs
+* Email notifications
+* File uploads
+* Docker deployment
+* CI/CD pipeline
+
+These are intentionally deferred until the core application is complete.
+
+---
+
+# Success Criteria
+
+By project completion I should be able to:
+
+* Design REST APIs
+* Build CRUD operations without tutorials
+* Connect React to a backend API
+* Work with PostgreSQL
+* Implement JWT authentication
+* Structure a multi-file backend project
+* Debug full-stack applications
+* Explain architecture decisions during interviews
+
+The objective is to learn software engineering fundamentals, not to build the most complex application possible.
