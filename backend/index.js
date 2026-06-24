@@ -54,7 +54,7 @@ app.post("/employees", async (req, res) => {
         .json({ message: "Please provide first and last name" });
     }
 
-    const newEmployee = Employee.create({
+    const newEmployee = await Employee.create({
       employeeId,
       firstName,
       lastName,
