@@ -1,50 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
+import { connectDB } from "./db.js";
+import { Employee } from "./models/Employee.js";
 
 dotenv.config();
+connectDB();
 
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
   res.json({ message: "working" });
 });
-
-let employees = [
-  {
-    id: 1,
-    employeeId: "EMP001",
-    firstName: "John",
-    lastName: "Smith",
-    email: "john.smith@company.com",
-    position: "Software Engineer",
-    department: "Engineering",
-    salary: 95000,
-    hireDate: "2024-06-01",
-  },
-  {
-    id: 2,
-    employeeId: "EMP002",
-    firstName: "Emily",
-    lastName: "Johnson",
-    email: "emily.johnson@company.com",
-    position: "Product Manager",
-    department: "Product",
-    salary: 105000,
-    hireDate: "2023-09-15",
-  },
-  {
-    id: 3,
-    employeeId: "EMP003",
-    firstName: "Michael",
-    lastName: "Brown",
-    email: "michael.brown@company.com",
-    position: "UX Designer",
-    department: "Design",
-    salary: 85000,
-    hireDate: "2022-11-20",
-  },
-];
 
 /*
  Add routes
@@ -68,29 +36,53 @@ app.get("/employees/:id", (req, res) => {
   return res.json(employee);
 });
 
-app.post("/employees", (req, res) => {
-  const newEmployee = req.body;
+app.post("/employees", async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      position,
+      department,
+      salary,
+      hireDate,
+      employeeId,
+    } = req.body;
+    if (!firstName || !lastName) {
+      return res
+        .status(400)
+        .json({ message: "Please provide first and last name" });
+    }
 
-  if (!newEmployee.firstName || !newEmployee.lastName) {
-    return res.status(400).json({
-      message: "Please give the employee a valid first and/or last name",
+    const newEmployee = Employee.create({
+      employeeId,
+      firstName,
+      lastName,
+      email,
+      position,
+      department,
+      salary,
+      hireDate,
     });
+
+    return res.status(201).json({
+      message: "Employee created successfully",
+      employee: newEmployee,
+    });
+  } catch (error) {
+    console.error("Create employee error: ", error);
+
+    return res
+      .status(500)
+      .json({ message: "Server error while creating employee" });
   }
-
-  newEmployee.id = employees.length + 1;
-  employees.push(newEmployee);
-
-  return res.status(201).json({
-    message: "Employee created successfully",
-    employee: newEmployee,
-  });
 });
 
-app.put("/employee/:id", (req, res) => {
+app.put("/employees/:id", (req, res) => {
   const employeeId = parseInt(req.params.id);
   const updatedEmployee = req.body;
 
-  const employee = employees.find((emp) => emp.id === employeeId);
+  const index = employees.find((emp) => emp.id === employeeId);
 
   if (index === -1) {
     res.status(404).json({ message: "Employee not found" });
@@ -98,16 +90,16 @@ app.put("/employee/:id", (req, res) => {
 
   res.json({
     message: "Employee updated successfully",
-    employee,
+    employee: employee[index],
   });
 });
 
-app.delete("/employee/:id", (req, res) => {
+app.delete("/employees/:id", (req, res) => {
   const employeeId = parseInt(req.params.id);
 
   const index = employees.findIndex((emp) => emp.id === employeeId);
 
-  if (!employee) {
+  if (index === -1) {
     res.status(404).json({ message: "Employee not found" });
   }
   const deletedEmployee = employees.splice(index, 1);
