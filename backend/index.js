@@ -22,8 +22,16 @@ app.get("/", (req, res) => {
  delete emplyees:id
 */
 
-app.get("/employees", (req, res) => {
-  res.json(employees);
+app.get("/employees", async (req, res) => {
+  try {
+    const employees = await Employee.find();
+    return res
+      .status(200)
+      .json({ message: "Employees retrieved successfully", employees });
+  } catch (error) {
+    console.log("Error fetching employees: ", error);
+    return res.status(500).json({ message: "Employees could not be returned" });
+  }
 });
 
 app.get("/employees/:id", (req, res) => {
