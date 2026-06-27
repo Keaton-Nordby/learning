@@ -34,14 +34,19 @@ app.get("/employees", async (req, res) => {
   }
 });
 
-app.get("/employees/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const employee = employees.find((emp) => emp.id === id);
+app.get("/employees/:id", async (req, res) => {
+  try {
+    const employeeId = req.params.id;
+    const employee = await Employee.findById(employeeId);
 
-  if (!employee) {
-    return res.status(404).json({ message: "Employee not found" });
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+    return res.json(employee);
+  } catch (error) {
+    console.error("Error retrieving employee info: ", error);
+    return res.status(500).json({ message: "Error retrieving employee" });
   }
-  return res.json(employee);
 });
 
 app.post("/employees", async (req, res) => {
@@ -86,35 +91,47 @@ app.post("/employees", async (req, res) => {
   }
 });
 
-app.put("/employees/:id", (req, res) => {
-  const employeeId = parseInt(req.params.id);
-  const updatedEmployee = req.body;
+app.put("/employees/:id", async (req, res) => {
+  try {
+    const employeeId = req.params.id;
+    const updatedEmployee = req.body;
+    const employee = await Employee.findByIdAndUpdate(
+      employeeId,
+      updatedEmployee,
+      { new: true },
+    );
 
-  const index = employees.find((emp) => emp.id === employeeId);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
 
-  if (index === -1) {
-    res.status(404).json({ message: "Employee not found" });
+    return res.json({
+      message: "Employee updated successfully",
+      employee,
+    });
+  } catch (error) {
+    console.error("Error trying to update employee: ", error);
+    res.status(500).json({ message: "Unable to update employee" });
   }
-
-  res.json({
-    message: "Employee updated successfully",
-    employee: employee[index],
-  });
 });
 
-app.delete("/employees/:id", (req, res) => {
-  const employeeId = parseInt(req.params.id);
+app.delete("/employees/:id", async (req, res) => {
+  try {
+    const employeeId = req.params.id;
+    const deletedEmployee = await Employee.findByIdAndDelete(employeeId);
 
-  const index = employees.findIndex((emp) => emp.id === employeeId);
+    if (!deletedEmployee) {
+      res.status(404).json({ message: "Employee not found" });
+    }
 
-  if (index === -1) {
-    res.status(404).json({ message: "Employee not found" });
+    return res.json(deletedEmployee);
+  } catch (error) {
+    console.error("Deleting employee error: ", error);
+
+    return res
+      .status(500)
+      .json({ message: "Server error while deleting employee" });
   }
-  const deletedEmployee = employees.splice(index, 1);
-
-  res
-    .status(200)
-    .json({ message: "Employee deleted successfully", deletedEmployee });
 });
 
 app.listen(PORT, () => {
