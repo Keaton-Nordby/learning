@@ -1,6 +1,6 @@
 import { Employee } from "../models/Employee.js";
 
-export const getEmployees = async (req, res) => {
+export const getEmployees = async (req, res, next) => {
   try {
     const employees = await Employee.find();
     return res
@@ -12,14 +12,17 @@ export const getEmployees = async (req, res) => {
   }
 };
 
-export const getEmployeeById = async (req, res) => {
+export const getEmployeeById = async (req, res, next) => {
   try {
     const employeeId = req.params.id;
     const employee = await Employee.findById(employeeId);
 
     if (!employee) {
-      return res.status(404).json({ message: "Employee not found" });
+      return res.status(404).json({
+        message: "Employee not found",
+      });
     }
+
     return res.json(employee);
   } catch (error) {
     console.error("Error retrieving employee info: ", error);
@@ -27,7 +30,7 @@ export const getEmployeeById = async (req, res) => {
   }
 };
 
-export const addEmployee = async (req, res) => {
+export const addEmployee = async (req, res, next) => {
   try {
     const {
       firstName,
@@ -39,25 +42,6 @@ export const addEmployee = async (req, res) => {
       hireDate,
       employeeId,
     } = req.body;
-    if (!firstName || !lastName) {
-      return res
-        .status(400)
-        .json({ message: "Please provide first and last name" });
-    }
-
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-
-    if (!email.includes("@")) {
-      return res.status(400).json({ message: "Invalid email format" });
-    }
-
-    if (salary !== undefined && salary <= 0) {
-      return res.status(400).json({
-        message: "Salary must be greater than 0",
-      });
-    }
 
     const newEmployee = await Employee.create({
       employeeId,
@@ -83,7 +67,7 @@ export const addEmployee = async (req, res) => {
   }
 };
 
-export const updateEmployee = async (req, res) => {
+export const updateEmployee = async (req, res, next) => {
   try {
     const employeeId = req.params.id;
     const updatedEmployee = req.body;
@@ -96,10 +80,6 @@ export const updateEmployee = async (req, res) => {
       },
     );
 
-    if (!employee) {
-      return res.status(404).json({ message: "Employee not found" });
-    }
-
     return res.json({
       message: "Employee updated successfully",
       employee,
@@ -110,7 +90,7 @@ export const updateEmployee = async (req, res) => {
   }
 };
 
-export const deleteEmployee = async (req, res) => {
+export const deleteEmployee = async (req, res, next) => {
   try {
     const employeeId = req.params.id;
     const deletedEmployee = await Employee.findByIdAndDelete(employeeId);
