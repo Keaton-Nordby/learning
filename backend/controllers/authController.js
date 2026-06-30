@@ -1,4 +1,4 @@
-import { User } from "../models/User";
+import { User } from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -20,7 +20,6 @@ export const registerUser = async (req, res) => {
     const user = await User.create({
       username,
       email,
-      password: hashedPassword,
     });
 
     return res.status(201).json({
@@ -35,18 +34,34 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Email or password is incorrect",
+      });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      res.status(400).json({ message: "Email or password is incorrect" });
+      return res.status(400).json({
+        message: "Email or password is incorrect",
+      });
     }
 
-    const token = jwt.sign({
-        id: user._id,
-        process.env.JWT_SECRET
-    })
-  } catch (error) {}
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    return res.json({
+      message: "Login successful",
+      token,
+    });
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
 };
